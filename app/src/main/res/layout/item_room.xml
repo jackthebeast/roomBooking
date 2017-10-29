@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="roomViewModel"
+            type="it.jgrassi.roombooking.viewmodel.ItemRoomViewModel"/>
+    </data>
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/item_room"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="@{roomViewModel::onItemClick}"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:background="?android:attr/selectableItemBackground">
+
+        <ImageView
+            android:id="@+id/room_item_photo"
+            android:layout_width="@dimen/room_item_photo_size"
+            android:layout_height="@dimen/room_item_photo_size"
+            android:src="@mipmap/no_img"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginBottom="8dp"
+            android:layout_marginStart="8dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            photoUrl="@{roomViewModel.photoUrl}"/>
+
+        <TextView
+            android:id="@+id/room_location"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="@{roomViewModel.location}"
+            android:textColor="@android:color/darker_gray"
+            android:textSize="@dimen/room_item_location_text_size"
+            app:layout_constraintStart_toEndOf="@+id/room_item_photo"
+            app:layout_constraintTop_toBottomOf="@+id/room_name"
+            tools:text="location" />
+
+        <TextView
+            android:id="@+id/room_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:text="@{roomViewModel.name}"
+            android:textColor="@android:color/background_dark"
+            android:textSize="@dimen/room_item_name_text_size"
+            android:transitionName="@string/room_transition_name"
+            app:layout_constraintStart_toEndOf="@+id/room_item_photo"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="title" />
+
+        <ImageView
+            android:id="@+id/room_item_size_icon"
+            android:layout_width="@dimen/room_item_icons_size"
+            android:layout_height="@dimen/room_item_icons_size"
+            android:layout_marginEnd="8dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:src="@mipmap/ic_perm_group_personal_info"/>
+
+        <TextView
+            android:id="@+id/room_item_size"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginTop="8dp"
+            android:text="@{roomViewModel.size}"
+            android:textColor="@android:color/darker_gray"
+            android:textSize="@dimen/room_item_info_text_size"
+            app:layout_constraintEnd_toStartOf="@+id/room_item_capacity_icon"
+            app:layout_constraintTop_toBottomOf="@+id/room_item_capacity"
+            tools:text="size" />
+
+        <ImageView
+            android:id="@+id/room_item_capacity_icon"
+            android:layout_width="@dimen/room_item_icons_size"
+            android:layout_height="@dimen/room_item_icons_size"
+            android:layout_marginEnd="8dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/room_item_size_icon"
+            android:src="@mipmap/ic_perm_group_display" />
+
+        <TextView
+            android:id="@+id/room_item_capacity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginTop="8dp"
+            android:text="@{roomViewModel.capacity}"
+            android:textColor="@android:color/darker_gray"
+            android:textSize="@dimen/room_item_info_text_size"
+            app:layout_constraintEnd_toStartOf="@+id/room_item_capacity_icon"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="capacity" />
+
+    </android.support.constraint.ConstraintLayout>
+</layout>

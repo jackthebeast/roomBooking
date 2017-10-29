@@ -5,5 +5,5 @@ package it.jgrassi.roombooking.data;
  */
 
 public class FactoryUtils {
-    public final static String BASE_URL = "";
+    public final static String BASE_URL = "https://challenges.1aim.com/roombooking_app/";
 }

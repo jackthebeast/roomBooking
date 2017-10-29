@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">Room Booking</string>
+    <string name="rooms_activity_name">Rooms</string>
+    <string name="loading_error">Loading failed: %1$s</string>
+
+
+
+    <string name="room_transition_name">room_transition_name</string>
 </resources>

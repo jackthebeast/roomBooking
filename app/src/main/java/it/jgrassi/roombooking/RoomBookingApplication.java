@@ -5,6 +5,8 @@ import android.content.Context;
 
 import io.reactivex.Scheduler;
 import io.reactivex.schedulers.Schedulers;
+import it.jgrassi.roombooking.data.RoomFactory;
+import it.jgrassi.roombooking.data.RoomService;
 
 
 /**
@@ -14,6 +16,7 @@ import io.reactivex.schedulers.Schedulers;
 public class RoomBookingApplication extends Application{
 
     private Scheduler scheduler;
+    private RoomService roomService;
 
     public static RoomBookingApplication getApp(Context context){
         return (RoomBookingApplication) context.getApplicationContext();
@@ -29,6 +32,11 @@ public class RoomBookingApplication extends Application{
         return scheduler;
     }
 
-
+    public RoomService getRoomService(){
+        if(roomService == null){
+            roomService = RoomFactory.create();
+        }
+        return roomService;
+    }
 
 }
