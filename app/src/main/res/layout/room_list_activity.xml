@@ -4,22 +4,65 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="mainViewModel"
-            type="it.jgrassi.roombooking.viewmodel.RoomListViewModel"/>
+            type="it.jgrassi.roombooking.viewmodel.RoomListViewModel" />
     </data>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:gravity="center">
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/day"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text='@{mainViewModel.day}'
+            android:gravity="center"
+            android:padding="8dp"
+            android:textAppearance="?android:attr/textAppearanceLarge"/>
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/search"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:hint="Search..."
+                android:text="@={mainViewModel.searchKey}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <CheckBox
+                android:id="@+id/available_next_hour"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginTop="8dp"
+                android:hint="Available in the next hour"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:checked="@={mainViewModel.availableNextHour}"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </android.support.constraint.ConstraintLayout>
 
         <ProgressBar
             android:id="@+id/progress_rooms"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:visibility="@{mainViewModel.roomsProgress}"/>
+            app:visibility="@{mainViewModel.roomsProgress}" />
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/list_room"
@@ -27,7 +70,7 @@
             android:layout_height="match_parent"
             android:scrollbars="vertical"
             app:visibility="@{mainViewModel.roomsRecycler}"
-            tools:listitem="@layout/item_room"/>
+            tools:listitem="@layout/item_room" />
 
     </LinearLayout>
 

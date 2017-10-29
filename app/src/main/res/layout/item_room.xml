@@ -22,16 +22,14 @@
 
         <ImageView
             android:id="@+id/room_item_photo"
+            photoUrl="@{roomViewModel.photoUrl}"
             android:layout_width="@dimen/room_item_photo_size"
             android:layout_height="@dimen/room_item_photo_size"
-            android:src="@mipmap/no_img"
-            app:layout_constraintTop_toTopOf="parent"
             android:layout_marginTop="8dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_marginBottom="8dp"
             android:layout_marginStart="8dp"
+            android:src="@mipmap/no_img"
             app:layout_constraintLeft_toLeftOf="parent"
-            photoUrl="@{roomViewModel.photoUrl}"/>
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/room_location"
@@ -104,6 +102,31 @@
             app:layout_constraintEnd_toStartOf="@+id/room_item_capacity_icon"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="capacity" />
+
+        <com.github.mikephil.charting.charts.HorizontalBarChart
+            android:id="@+id/availChart"
+            availData="@{roomViewModel.availData}"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            app:layout_constraintTop_toBottomOf="@+id/room_item_photo"
+            tools:layout_editor_absoluteX="8dp" />
+
+        <TextView
+            android:id="@+id/room_item_equipment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:text="@{roomViewModel.equipment}"
+            android:textColor="@android:color/darker_gray"
+            android:textSize="@dimen/room_item_info_text_size"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/availChart"
+            tools:text="equipment" />
 
     </android.support.constraint.ConstraintLayout>
 </layout>

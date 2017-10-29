@@ -1,9 +1,12 @@
 package it.jgrassi.roombooking.viewmodel;
 
 import android.content.Context;
+import android.databinding.ObservableField;
 import android.databinding.ObservableInt;
 import android.view.View;
 import android.widget.Toast;
+
+import org.joda.time.LocalDate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,16 +32,22 @@ public class RoomListViewModel extends Observable {
 
     public ObservableInt roomsProgress;
     public ObservableInt roomsRecycler;
+    private ObservableField<LocalDate> day;
+    private String searchKey;
+    private boolean availableNextHour;
+//    public LocalDate day;
 
     private List<Room> roomList;
     private Context context;
     private CompositeDisposable compositeDisposable;
+    private List<Room> unfilteredRooms;
 
     public RoomListViewModel(Context context){
         this.context = context;
         this.roomList = new ArrayList<>();
         roomsRecycler = new ObservableInt(View.GONE);
         roomsProgress = new ObservableInt(View.GONE);
+        day = new ObservableField<>();
         compositeDisposable = new CompositeDisposable();
 
         initializeViews();
@@ -49,10 +58,31 @@ public class RoomListViewModel extends Observable {
     private  void initializeViews(){
         roomsRecycler.set(View.GONE);
         roomsProgress.set(View.VISIBLE);
+        day.set(new LocalDate());
+        searchKey = "";
     }
 
     private void setRoomsData(List<Room> rooms){
         roomList.addAll(rooms);
+        this.unfilteredRooms = rooms;
+        setChanged();
+        notifyObservers();
+    }
+
+    private void filterRooms() {
+        List<Room> filteredRooms = new ArrayList<>();
+        for(Room room : unfilteredRooms){
+            if(room.name.contains(searchKey)) {
+                if(availableNextHour) {
+                    if (room.isAvailableNextHour())
+                        filteredRooms.add(room);
+                }else{
+                    filteredRooms.add(room);
+                }
+            }
+        }
+        this.roomList = new ArrayList<>();
+        roomList.addAll(filteredRooms);
         setChanged();
         notifyObservers();
     }
@@ -100,4 +130,37 @@ public class RoomListViewModel extends Observable {
         }
     }
 
+    public void setSearchKey(String newKey){
+        searchKey = newKey;
+        filterRooms();
+    }
+
+    public String getSearchKey(){
+        return searchKey;
+    }
+
+    public boolean isAvailableNextHour() {
+        return availableNextHour;
+    }
+
+    public void setAvailableNextHour(boolean availableNextHour) {
+        this.availableNextHour = availableNextHour;
+        filterRooms();
+    }
+
+    public String getDay(){
+        return day.get().toString("dd/MM/yyyy");
+    }
+
+    public void previousDay() {
+        day.set(day.get().plusDays(1));
+//        setChanged();
+//        notifyObservers();
+    }
+
+    public void nextDay() {
+        day.set(day.get().minusDays(1));
+        day.notifyChange();
+
+    }
 }
