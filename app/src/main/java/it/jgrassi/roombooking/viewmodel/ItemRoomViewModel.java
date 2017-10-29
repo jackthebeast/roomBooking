@@ -100,7 +100,6 @@ public class ItemRoomViewModel extends BaseObservable{
         chart.setDescription(description);
 
         chart.setDrawGridBackground(false);
-        chart.setGridBackgroundColor(R.color.white);
         chart.setDrawBarShadow(false);
         chart.setTouchEnabled(false);
 
