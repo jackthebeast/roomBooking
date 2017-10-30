@@ -8,8 +8,11 @@ import android.databinding.ObservableInt;
 import android.view.View;
 import android.widget.Toast;
 
+import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
+import org.joda.time.LocalTime;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
@@ -26,6 +29,7 @@ import it.jgrassi.roombooking.data.RoomFactory;
 import it.jgrassi.roombooking.data.RoomService;
 import it.jgrassi.roombooking.model.Room;
 import it.jgrassi.roombooking.model.RoomsRequest;
+import it.jgrassi.roombooking.view.RoomListActivity;
 
 /**
  * Created by jacop on 29/10/2017.
@@ -45,13 +49,18 @@ public class RoomListViewModel extends Observable implements android.databinding
     private CompositeDisposable compositeDisposable;
     private List<Room> unfilteredRooms;
 
-    public RoomListViewModel(Context context){
+    public RoomListViewModel(Context context, LocalDate day){
         this.context = context;
         this.roomList = new ArrayList<>();
         roomsRecycler = new ObservableInt(View.GONE);
         roomsProgress = new ObservableInt(View.GONE);
 //        day = new ObservableField<>();
         compositeDisposable = new CompositeDisposable();
+
+        if(day == null)
+            this.day = new LocalDate();
+        else
+            this.day = day;
 
         initializeViews();
         fetchRoomList();
@@ -61,7 +70,6 @@ public class RoomListViewModel extends Observable implements android.databinding
     private  void initializeViews(){
         roomsRecycler.set(View.GONE);
         roomsProgress.set(View.VISIBLE);
-        day = new LocalDate();
         searchKey = "";
     }
 
@@ -99,7 +107,7 @@ public class RoomListViewModel extends Observable implements android.databinding
         RoomBookingApplication application = RoomBookingApplication.createApp(context);
         RoomService service = application.getRoomService();
 
-        RoomsRequest requestBody = new RoomsRequest(RoomsRequest.NOW);
+        RoomsRequest requestBody = new RoomsRequest(Long.toString(day.toDateTime(new LocalTime()).getMillis()));
 
         Disposable disposable = service.fetchRooms(FactoryUtils.BASE_URL + RoomFactory.ROOM_URL, requestBody)
                 .subscribeOn(application.subscribeScheduler())
@@ -149,6 +157,17 @@ public class RoomListViewModel extends Observable implements android.databinding
     public void setAvailableNextHour(boolean availableNextHour) {
         this.availableNextHour = availableNextHour;
         filterRooms();
+    }
+
+    public void onItemClick(View view) {
+        if(view.getId() == R.id.arrow_left) {
+            if(!day.isEqual(new LocalDate()))
+                RoomListActivity.launchDetail(view.getContext(), day.minusDays(1));
+            else
+                Toast.makeText(context, "You can't see yesterday's available rooms!", Toast.LENGTH_LONG).show();
+        }
+        if(view.getId() == R.id.arrow_right)
+            RoomListActivity.launchDetail(view.getContext(), day.plusDays(1));
     }
 
     @Bindable

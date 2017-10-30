@@ -2,6 +2,7 @@ package it.jgrassi.roombooking.viewmodel;
 
 import android.content.Context;
 import android.databinding.BindingAdapter;
+import android.view.View;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
@@ -26,6 +27,7 @@ import it.jgrassi.roombooking.R;
 import it.jgrassi.roombooking.data.FactoryUtils;
 import it.jgrassi.roombooking.model.Interval;
 import it.jgrassi.roombooking.model.Room;
+import it.jgrassi.roombooking.view.RoomListActivity;
 
 /**
  * Created by jacop on 30/10/2017.
@@ -33,7 +35,6 @@ import it.jgrassi.roombooking.model.Room;
 
 public class RoomDetailViewModel extends Observable {
 
-    private static int numberOfPhotos;
     public Room room;
 
     private Context context;
@@ -42,7 +43,6 @@ public class RoomDetailViewModel extends Observable {
     public RoomDetailViewModel(Context context, Room room){
         this.context = context;
         this.room = room;
-        numberOfPhotos = room.images.length;
     }
 
     @BindingAdapter({"photoUrlDetail"})

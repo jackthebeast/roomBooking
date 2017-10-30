@@ -1,5 +1,8 @@
 package it.jgrassi.roombooking.view;
 
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -8,6 +11,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import org.joda.time.LocalDate;
 
 import java.util.Observable;
 import java.util.Observer;
@@ -22,6 +27,7 @@ import it.jgrassi.roombooking.viewmodel.RoomListViewModel;
 
 public class RoomListActivity extends AppCompatActivity implements Observer, SwipeInterface {
 
+    private static String PARAM_DAY = "PARAM_DAY";
     private RoomListActivityBinding binding;
     private RoomListViewModel viewModel;
 
@@ -47,7 +53,7 @@ public class RoomListActivity extends AppCompatActivity implements Observer, Swi
 
     private void initDataBinding() {
         binding = DataBindingUtil.setContentView(this, R.layout.room_list_activity);
-        viewModel = new RoomListViewModel(this);
+        viewModel = new RoomListViewModel(this, (LocalDate) getIntent().getSerializableExtra(PARAM_DAY));
         binding.setMainViewModel(viewModel);
 
         SwipeDetector swipe = new SwipeDetector(this);
@@ -62,6 +68,15 @@ public class RoomListActivity extends AppCompatActivity implements Observer, Swi
             RoomListViewModel viewmodel = (RoomListViewModel) observable;
             adapter.setRoomList(viewmodel.getRoomList());
         }
+    }
+
+
+    public static void launchDetail(Context context, LocalDate day) {
+        Intent intent = new Intent(context, RoomListActivity.class);
+        intent.putExtra(PARAM_DAY, day);
+        ((Activity)context).finish();
+        context.startActivity(intent);
+        ((Activity)context).overridePendingTransition(0,0);
     }
 
     @Override
