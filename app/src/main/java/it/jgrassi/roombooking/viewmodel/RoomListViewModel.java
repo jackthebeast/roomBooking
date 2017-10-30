@@ -1,6 +1,8 @@
 package it.jgrassi.roombooking.viewmodel;
 
 import android.content.Context;
+import android.databinding.BaseObservable;
+import android.databinding.Bindable;
 import android.databinding.ObservableField;
 import android.databinding.ObservableInt;
 import android.view.View;
@@ -16,6 +18,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
+import it.jgrassi.roombooking.BR;
 import it.jgrassi.roombooking.R;
 import it.jgrassi.roombooking.RoomBookingApplication;
 import it.jgrassi.roombooking.data.FactoryUtils;
@@ -28,14 +31,14 @@ import it.jgrassi.roombooking.model.RoomsRequest;
  * Created by jacop on 29/10/2017.
  */
 
-public class RoomListViewModel extends Observable {
+public class RoomListViewModel extends Observable implements android.databinding.Observable{
 
     public ObservableInt roomsProgress;
     public ObservableInt roomsRecycler;
-    private ObservableField<LocalDate> day;
+//    private ObservableField<LocalDate> day;
     private String searchKey;
     private boolean availableNextHour;
-//    public LocalDate day;
+    private LocalDate day;
 
     private List<Room> roomList;
     private Context context;
@@ -47,7 +50,7 @@ public class RoomListViewModel extends Observable {
         this.roomList = new ArrayList<>();
         roomsRecycler = new ObservableInt(View.GONE);
         roomsProgress = new ObservableInt(View.GONE);
-        day = new ObservableField<>();
+//        day = new ObservableField<>();
         compositeDisposable = new CompositeDisposable();
 
         initializeViews();
@@ -58,7 +61,7 @@ public class RoomListViewModel extends Observable {
     private  void initializeViews(){
         roomsRecycler.set(View.GONE);
         roomsProgress.set(View.VISIBLE);
-        day.set(new LocalDate());
+        day = new LocalDate();
         searchKey = "";
     }
 
@@ -148,19 +151,30 @@ public class RoomListViewModel extends Observable {
         filterRooms();
     }
 
+    @Bindable
     public String getDay(){
-        return day.get().toString("dd/MM/yyyy");
+        return day.toString("dd/MM/yyyy");
     }
 
     public void previousDay() {
-        day.set(day.get().plusDays(1));
-//        setChanged();
-//        notifyObservers();
+        day = day.plusDays(1);
+        setChanged();
+        notifyObservers();
     }
 
     public void nextDay() {
-        day.set(day.get().minusDays(1));
-        day.notifyChange();
+        day = day.minusDays(1);
+        //notifyPropertyChanged(BR.day);
+
+    }
+
+    @Override
+    public void addOnPropertyChangedCallback(OnPropertyChangedCallback onPropertyChangedCallback) {
+
+    }
+
+    @Override
+    public void removeOnPropertyChangedCallback(OnPropertyChangedCallback onPropertyChangedCallback) {
 
     }
 }

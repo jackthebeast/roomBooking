@@ -1,10 +1,7 @@
 package it.jgrassi.roombooking.viewmodel;
 
 import android.content.Context;
-import android.databinding.BaseObservable;
 import android.databinding.BindingAdapter;
-import android.support.v4.util.Pair;
-import android.view.View;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
@@ -17,61 +14,59 @@ import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
+import com.github.mikephil.charting.highlight.Highlight;
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Observable;
 
 import it.jgrassi.roombooking.R;
 import it.jgrassi.roombooking.data.FactoryUtils;
 import it.jgrassi.roombooking.model.Interval;
 import it.jgrassi.roombooking.model.Room;
-import it.jgrassi.roombooking.view.RoomDetailActivity;
 
 /**
- * Created by jacop on 29/10/2017.
+ * Created by jacop on 30/10/2017.
  */
 
-public class ItemRoomViewModel extends BaseObservable{
+public class RoomDetailViewModel extends Observable {
 
-    private Room room;
+    private static int numberOfPhotos;
+    public Room room;
+
     private Context context;
+    private BarData barData;
 
-    public ItemRoomViewModel(Context context, Room room){
+    public RoomDetailViewModel(Context context, Room room){
         this.context = context;
         this.room = room;
+        numberOfPhotos = room.images.length;
     }
 
-    public void setRoom(Room room){
-        this.room = room;
-        notifyChange();
-    }
-
-    public String getName(){
-        return room.name;
-    }
-
-    public String getLocation(){
-        return room.location;
-    }
-
-    public String getSize(){
-        return room.size;
-    }
-
-    public String getCapacity(){
-        return room.capacity;
-    }
-
-    @BindingAdapter({"photoUrl"})
-    public static void loadPhoto(ImageView imageView, String url) {
-        if(url != null)
+    @BindingAdapter({"photoUrlDetail"})
+    public static void loadPhotoDetail(ImageView imageView, String url) {
+        if(url != null) {
             Glide.with(imageView.getContext()).load(url).into(imageView);
+        }
     }
 
-    public String getPhotoUrl() {
+    public String getPhotoUrl1() {
         if(room.images[0] != null)
             return FactoryUtils.BASE_URL + room.images[0];
+        return null;
+    }
+
+    public String getPhotoUrl2() {
+        if(room.images[1] != null)
+            return FactoryUtils.BASE_URL + room.images[1];
+        return null;
+    }
+
+    public String getPhotoUrl3() {
+        if(room.images[2] != null)
+            return FactoryUtils.BASE_URL + room.images[2];
         return null;
     }
 
@@ -88,8 +83,12 @@ public class ItemRoomViewModel extends BaseObservable{
         return ret;
     }
 
-    @BindingAdapter({"availData"})
-    public static void buildChart(HorizontalBarChart chart, BarData data) {
+    private void buildBookingLayout(Interval interval) {
+
+    }
+
+    @BindingAdapter({"availDataDetail"})
+    public static void buildChart(HorizontalBarChart chart, final RoomDetailViewModel model) {
         //number of "pieces" in the chart = number of slots in a day
         chart.setMaxVisibleValueCount(48);
 
@@ -99,7 +98,19 @@ public class ItemRoomViewModel extends BaseObservable{
 
         chart.setDrawGridBackground(false);
         chart.setDrawBarShadow(false);
-        chart.setTouchEnabled(false);
+        chart.setOnChartValueSelectedListener( new OnChartValueSelectedListener() {
+            @Override
+            public void onValueSelected(Entry e, Highlight selected) {
+                 model.buildBookingLayout(model.room.availInterval.get(selected.getStackIndex()));
+            }
+
+
+
+            @Override
+            public void onNothingSelected() {
+
+            }
+        });
 
         chart.animateY(0);
 
@@ -155,10 +166,10 @@ public class ItemRoomViewModel extends BaseObservable{
         l.setEnabled(false);
 
 
-        chart.setData(data);
+        chart.setData(model.barData);
     }
 
-    public BarData getAvailData() {
+    public RoomDetailViewModel getAvailData() {
         room.computeIntervals();
 
         float[] intervals = new float[room.availInterval.size()];
@@ -182,27 +193,16 @@ public class ItemRoomViewModel extends BaseObservable{
         yVals.add(new BarEntry(0.0F, intervals));
         BarDataSet yset = new BarDataSet(yVals, "");
 
-        yset.setColors(colors);
+        yset.setColors(colors);                     //adding colors after converting them to an array
         yset.setDrawValues(false);
 
 
-        BarData data = new BarData( yset);
-        return data;
+        barData = new BarData( yset);
+        return this;
     }
 
-    public void onItemClick(View view) {
-        List<Pair<View, String>> elements = new ArrayList<>();
-        elements.add(new Pair<>(view.findViewById(R.id.room_name),view.getContext().getResources().getString(R.string.room_transition_name)));
-        elements.add(new Pair<>(view.findViewById(R.id.room_location),view.getContext().getResources().getString(R.string.room_transition_location)));
-        elements.add(new Pair<>(view.findViewById(R.id.room_item_size_icon),view.getContext().getResources().getString(R.string.room_transition_size_icon)));
-        elements.add(new Pair<>(view.findViewById(R.id.room_item_size),view.getContext().getResources().getString(R.string.room_transition_location)));
-        elements.add(new Pair<>(view.findViewById(R.id.room_item_capacity_icon),view.getContext().getResources().getString(R.string.room_transition_location)));
-        elements.add(new Pair<>(view.findViewById(R.id.room_item_capacity),view.getContext().getResources().getString(R.string.room_transition_location)));
-        elements.add(new Pair<>(view.findViewById(R.id.room_item_photo),view.getContext().getResources().getString(R.string.room_transition_location)));
-        elements.add(new Pair<>(view.findViewById(R.id.room_item_equipment),view.getContext().getResources().getString(R.string.room_transition_location)));
-        elements.add(new Pair<>(view.findViewById(R.id.availChart),view.getContext().getResources().getString(R.string.room_transition_location)));
-
-        RoomDetailActivity.launchDetail(view.getContext(), room, elements.toArray(new Pair[elements.size()]));
+    public void reset() {
+        context = null;
     }
 
 }

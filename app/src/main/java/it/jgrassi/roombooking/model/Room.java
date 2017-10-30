@@ -1,5 +1,7 @@
 package it.jgrassi.roombooking.model;
 
+import com.google.gson.annotations.SerializedName;
+
 import org.joda.time.LocalTime;
 
 import java.io.Serializable;
@@ -12,21 +14,28 @@ import java.util.List;
 
 public class Room implements Serializable{
 
+    @SerializedName("name")
     public String name;
 
+    @SerializedName("location")
     public String location;
 
+    @SerializedName("equipment")
     public String[] equipment;
 
+    @SerializedName("size")
     public String size;
 
-    public int capacity;
+    @SerializedName("capacity")
+    public String capacity;
 
+    @SerializedName("avail")
     public String[] avail;
 
+    @SerializedName("images")
     public String[] images;
 
-    public List<Interval> availInterval;
+    public transient List<Interval> availInterval;
 
     public void computeIntervals(){
         availInterval = new ArrayList<>();
