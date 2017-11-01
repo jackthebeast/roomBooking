@@ -4,6 +4,8 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
 
+    <color name="WHITE">#FFFFFF</color>
+
     <color name="booked">#E31E2F</color>
     <color name="free">#009547</color>
 </resources>

@@ -9,7 +9,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import org.joda.time.LocalDate;
@@ -25,15 +24,20 @@ import it.jgrassi.roombooking.viewmodel.RoomListViewModel;
  * Created by jacop on 29/10/2017.
  */
 
-public class RoomListActivity extends AppCompatActivity implements Observer, SwipeInterface {
+public class RoomListActivity extends AppCompatActivity implements Observer{
 
     private static String PARAM_DAY = "PARAM_DAY";
     private RoomListActivityBinding binding;
     private RoomListViewModel viewModel;
+    private LocalDate date;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        date = (LocalDate) getIntent().getSerializableExtra(PARAM_DAY);
+        if(date==null)
+            date = new LocalDate();
 
         initDataBinding();
         setupObserver(viewModel);
@@ -45,7 +49,7 @@ public class RoomListActivity extends AppCompatActivity implements Observer, Swi
     }
 
     private void setupRoomListView(RecyclerView list) {
-        RoomsAdapter adapter = new RoomsAdapter();
+        RoomsAdapter adapter = new RoomsAdapter(date);
         list.setAdapter(adapter);
         list.setLayoutManager(new LinearLayoutManager(this));
         list.addItemDecoration(new RoomsDivider(this));
@@ -53,12 +57,8 @@ public class RoomListActivity extends AppCompatActivity implements Observer, Swi
 
     private void initDataBinding() {
         binding = DataBindingUtil.setContentView(this, R.layout.room_list_activity);
-        viewModel = new RoomListViewModel(this, (LocalDate) getIntent().getSerializableExtra(PARAM_DAY));
+        viewModel = new RoomListViewModel(this, date);
         binding.setMainViewModel(viewModel);
-
-        SwipeDetector swipe = new SwipeDetector(this);
-        TextView swipe_layout = (TextView) findViewById(R.id.day);
-        swipe_layout.setOnTouchListener(swipe);
     }
 
     @Override
@@ -85,23 +85,4 @@ public class RoomListActivity extends AppCompatActivity implements Observer, Swi
         viewModel.reset();
     }
 
-    @Override
-    public void bottom2top(View v) {
-
-    }
-
-    @Override
-    public void left2right(View v) {
-        viewModel.previousDay();
-    }
-
-    @Override
-    public void right2left(View v) {
-        viewModel.nextDay();
-    }
-
-    @Override
-    public void top2bottom(View v) {
-
-    }
 }

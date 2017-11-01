@@ -3,9 +3,8 @@ package it.jgrassi.roombooking.viewmodel;
 import android.content.Context;
 import android.databinding.BaseObservable;
 import android.databinding.BindingAdapter;
-import android.support.v4.util.Pair;
-import android.view.View;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.github.mikephil.charting.charts.HorizontalBarChart;
@@ -17,7 +16,12 @@ import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
+import com.github.mikephil.charting.highlight.Highlight;
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
+
+import org.joda.time.LocalDate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +30,7 @@ import it.jgrassi.roombooking.R;
 import it.jgrassi.roombooking.data.FactoryUtils;
 import it.jgrassi.roombooking.model.Interval;
 import it.jgrassi.roombooking.model.Room;
-import it.jgrassi.roombooking.view.RoomDetailActivity;
+import it.jgrassi.roombooking.view.BookingActivity;
 
 /**
  * Created by jacop on 29/10/2017.
@@ -34,12 +38,15 @@ import it.jgrassi.roombooking.view.RoomDetailActivity;
 
 public class ItemRoomViewModel extends BaseObservable{
 
+    private final LocalDate date;
     private Room room;
     private Context context;
+    private BarData data;
 
-    public ItemRoomViewModel(Context context, Room room){
+    public ItemRoomViewModel(Context context, Room room, LocalDate date){
         this.context = context;
         this.room = room;
+        this.date = date;
     }
 
     public void setRoom(Room room){
@@ -69,9 +76,21 @@ public class ItemRoomViewModel extends BaseObservable{
             Glide.with(imageView.getContext()).load(url).into(imageView);
     }
 
-    public String getPhotoUrl() {
-        if(room.images[0] != null)
+    public String getPhotoUrl1() {
+        if(room.images.length >=1)
             return FactoryUtils.BASE_URL + room.images[0];
+        return null;
+    }
+
+    public String getPhotoUrl2() {
+        if(room.images.length >=2)
+            return FactoryUtils.BASE_URL + room.images[1];
+        return null;
+    }
+
+    public String getPhotoUrl3() {
+        if(room.images.length >=3)
+            return FactoryUtils.BASE_URL + room.images[2];
         return null;
     }
 
@@ -89,7 +108,7 @@ public class ItemRoomViewModel extends BaseObservable{
     }
 
     @BindingAdapter({"availData"})
-    public static void buildChart(HorizontalBarChart chart, BarData data) {
+    public static void buildChart(final HorizontalBarChart chart, final ItemRoomViewModel vm) {
         //number of "pieces" in the chart = number of slots in a day
         chart.setMaxVisibleValueCount(48);
 
@@ -99,7 +118,23 @@ public class ItemRoomViewModel extends BaseObservable{
 
         chart.setDrawGridBackground(false);
         chart.setDrawBarShadow(false);
-        chart.setTouchEnabled(false);
+        chart.setOnChartValueSelectedListener( new OnChartValueSelectedListener() {
+            @Override
+            public void onValueSelected(Entry e, Highlight selected) {
+                Interval interval = vm.room.availInterval.get(selected.getStackIndex());
+                if(interval.getType() == Interval.TYPE_FREE)
+                    BookingActivity.launchBooking(chart.getContext(), vm.room.name, interval, vm.date);
+                else
+                    Toast.makeText(chart.getContext(), "Already booked", Toast.LENGTH_LONG).show();
+            }
+
+
+
+            @Override
+            public void onNothingSelected() {
+
+            }
+        });
 
         chart.animateY(0);
 
@@ -155,10 +190,10 @@ public class ItemRoomViewModel extends BaseObservable{
         l.setEnabled(false);
 
 
-        chart.setData(data);
+        chart.setData(vm.data);
     }
 
-    public BarData getAvailData() {
+    public ItemRoomViewModel getAvailData() {
         room.computeIntervals();
 
         float[] intervals = new float[room.availInterval.size()];
@@ -186,23 +221,8 @@ public class ItemRoomViewModel extends BaseObservable{
         yset.setDrawValues(false);
 
 
-        BarData data = new BarData( yset);
-        return data;
-    }
-
-    public void onItemClick(View view) {
-        List<Pair<View, String>> elements = new ArrayList<>();
-        elements.add(new Pair<>(view.findViewById(R.id.room_name),view.getContext().getResources().getString(R.string.room_transition_name)));
-        elements.add(new Pair<>(view.findViewById(R.id.room_location),view.getContext().getResources().getString(R.string.room_transition_location)));
-        elements.add(new Pair<>(view.findViewById(R.id.room_item_size_icon),view.getContext().getResources().getString(R.string.room_transition_size_icon)));
-        elements.add(new Pair<>(view.findViewById(R.id.room_item_size),view.getContext().getResources().getString(R.string.room_transition_location)));
-        elements.add(new Pair<>(view.findViewById(R.id.room_item_capacity_icon),view.getContext().getResources().getString(R.string.room_transition_location)));
-        elements.add(new Pair<>(view.findViewById(R.id.room_item_capacity),view.getContext().getResources().getString(R.string.room_transition_location)));
-        elements.add(new Pair<>(view.findViewById(R.id.room_item_photo),view.getContext().getResources().getString(R.string.room_transition_location)));
-        elements.add(new Pair<>(view.findViewById(R.id.room_item_equipment),view.getContext().getResources().getString(R.string.room_transition_location)));
-        elements.add(new Pair<>(view.findViewById(R.id.availChart),view.getContext().getResources().getString(R.string.room_transition_location)));
-
-        RoomDetailActivity.launchDetail(view.getContext(), room, elements.toArray(new Pair[elements.size()]));
+        data = new BarData( yset);
+        return this;
     }
 
 }

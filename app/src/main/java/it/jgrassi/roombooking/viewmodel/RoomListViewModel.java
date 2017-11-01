@@ -1,18 +1,14 @@
 package it.jgrassi.roombooking.viewmodel;
 
 import android.content.Context;
-import android.databinding.BaseObservable;
 import android.databinding.Bindable;
-import android.databinding.ObservableField;
 import android.databinding.ObservableInt;
 import android.view.View;
 import android.widget.Toast;
 
-import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
@@ -21,7 +17,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
-import it.jgrassi.roombooking.BR;
 import it.jgrassi.roombooking.R;
 import it.jgrassi.roombooking.RoomBookingApplication;
 import it.jgrassi.roombooking.data.FactoryUtils;
@@ -39,7 +34,6 @@ public class RoomListViewModel extends Observable implements android.databinding
 
     public ObservableInt roomsProgress;
     public ObservableInt roomsRecycler;
-//    private ObservableField<LocalDate> day;
     private String searchKey;
     private boolean availableNextHour;
     private LocalDate day;
@@ -54,13 +48,9 @@ public class RoomListViewModel extends Observable implements android.databinding
         this.roomList = new ArrayList<>();
         roomsRecycler = new ObservableInt(View.GONE);
         roomsProgress = new ObservableInt(View.GONE);
-//        day = new ObservableField<>();
         compositeDisposable = new CompositeDisposable();
 
-        if(day == null)
-            this.day = new LocalDate();
-        else
-            this.day = day;
+        this.day = day;
 
         initializeViews();
         fetchRoomList();
@@ -107,9 +97,9 @@ public class RoomListViewModel extends Observable implements android.databinding
         RoomBookingApplication application = RoomBookingApplication.createApp(context);
         RoomService service = application.getRoomService();
 
-        RoomsRequest requestBody = new RoomsRequest(Long.toString(day.toDateTime(new LocalTime()).getMillis()));
+        RoomsRequest requestBody = new RoomsRequest(Long.toString(day.toDateTime(new LocalTime(0,0)).getMillis()));
 
-        Disposable disposable = service.fetchRooms(FactoryUtils.BASE_URL + RoomFactory.ROOM_URL, requestBody)
+        Disposable disposable = service.fetchRooms(FactoryUtils.BASE_URL + RoomFactory.ROOMS_URL, requestBody)
                 .subscribeOn(application.subscribeScheduler())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<List<Room>>() {
@@ -183,8 +173,6 @@ public class RoomListViewModel extends Observable implements android.databinding
 
     public void nextDay() {
         day = day.minusDays(1);
-        //notifyPropertyChanged(BR.day);
-
     }
 
     @Override

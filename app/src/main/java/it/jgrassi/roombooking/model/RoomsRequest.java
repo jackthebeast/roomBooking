@@ -17,8 +17,4 @@ public class RoomsRequest {
         this.date = date;
     }
 
-    public RoomsRequest(Date date){
-        this.date = Long.toString(date.getTime());
-    }
-
 }

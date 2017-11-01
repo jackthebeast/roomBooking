@@ -4,14 +4,5 @@
     <string name="loading_error">Loading failed: %1$s</string>
 
 
-    <string name="room_transition_name">room_transition_name</string>
-    <string name="room_transition_location">room_transition_location</string>
-    <string name="room_transition_photo">room_transition_photo</string>
-    <string name="room_transition_size_label">room_transition_size_label</string>
-    <string name="room_transition_size_icon">room_transition_size_icon</string>
-    <string name="room_transition_capacity_label">room_transition_capacity_label</string>
-    <string name="room_transition_capacity_icon">room_transition_capacity_icon</string>
-    <string name="room_transition_equipment">room_transition_equipment</string>
-    <string name="room_transition_chart">room_transition_chart</string>
 
 </resources>

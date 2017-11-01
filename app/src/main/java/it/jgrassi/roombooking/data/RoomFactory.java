@@ -10,7 +10,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RoomFactory {
 
-    public static final String ROOM_URL = "getrooms";
+    public static final String ROOMS_URL = "getrooms";
+    public static final String BOOK_URL = "sendpass";
 
     public static RoomService create(){
         Retrofit retrofit = new Retrofit.Builder().baseUrl(FactoryUtils.BASE_URL)

@@ -3,6 +3,8 @@ package it.jgrassi.roombooking.model;
 import org.joda.time.LocalTime;
 import org.joda.time.Minutes;
 
+import java.io.Serializable;
+
 /**
  * Created by JGrassi on 12/10/2015.
  **/
@@ -10,7 +12,7 @@ import org.joda.time.Minutes;
 /**
  * this class represents an interval of time
  **/
-public class Interval {
+public class Interval implements Serializable{
 
     public static final String INTERVAL_SEPARATOR = " - ";
 
@@ -127,16 +129,4 @@ public class Interval {
         return false;
     }
 
-   /* public String getStartHourString(){
-        return String.format("%02d", startHour);
-    }
-    public String getStartMinuteString(){
-        return String.format("%02d", startMinute);
-    }
-    public String getEndHourString(){
-        return String.format("%02d", endHour);
-    }
-    public String getEndMinuteString(){
-        return String.format("%02d", endMinute);
-    }*/
 }

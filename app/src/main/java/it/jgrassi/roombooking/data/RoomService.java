@@ -3,10 +3,11 @@ package it.jgrassi.roombooking.data;
 import java.util.List;
 
 import io.reactivex.Observable;
+import it.jgrassi.roombooking.model.BookRequest;
+import it.jgrassi.roombooking.model.BookingResult;
 import it.jgrassi.roombooking.model.Room;
 import it.jgrassi.roombooking.model.RoomsRequest;
 import retrofit2.http.Body;
-import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Url;
 
@@ -17,4 +18,7 @@ import retrofit2.http.Url;
 public interface RoomService {
     @POST
     Observable<List<Room>> fetchRooms(@Url String url, @Body RoomsRequest request);
+
+    @POST
+    Observable<BookingResult> book(@Url String url, @Body BookRequest request);
 }
