@@ -93,7 +93,7 @@ public class BookingViewModel extends BaseObservable {
         boolean isToInInterval = to.isEqual(interval.getEnd()) || to.isAfter(interval.getStart()) && to.isBefore(interval.getEnd());
         boolean isFromBeforeTo = from.isBefore(to);
 
-        return isFromBeforeTo && isFromInInterval && isToInInterval;
+        return isFromBeforeTo && isFromInInterval && isToInInterval && invitationList.size() != 0;
     }
 
     @Bindable
@@ -102,7 +102,7 @@ public class BookingViewModel extends BaseObservable {
         boolean isEmailValid = (email != null && !email.equals("")) && email.matches("^[a-z,A-Z0-9._%+-]+@[a-z,A-Z0-9.-]+\\.[a-z,A-Z]{2,}$");
         boolean isNumberValid = (number != null && !number.equals("")) && number.matches("^\\+?[0-9, ]{3,16}$");
 
-        return isNameValid && isEmailValid && isNumberValid && invitationList.size() != 0;
+        return isNameValid && isEmailValid && isNumberValid;
         //return true;
     }
 
@@ -150,6 +150,7 @@ public class BookingViewModel extends BaseObservable {
         notifyPropertyChanged(BR.name);
         notifyPropertyChanged(BR.email);
         notifyPropertyChanged(BR.number);
+        notifyPropertyChanged(BR.bookingEnabled);
     }
 
     public void onBook(View view) {
