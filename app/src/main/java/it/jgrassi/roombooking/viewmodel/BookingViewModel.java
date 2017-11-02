@@ -7,6 +7,7 @@ import android.databinding.ObservableInt;
 import android.view.View;
 import android.widget.Toast;
 
+import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
 
@@ -156,8 +157,8 @@ public class BookingViewModel extends BaseObservable {
     public void onBook(View view) {
         RoomBookingApplication application = RoomBookingApplication.createApp(context);
         RoomService service = application.getRoomService();
-
-        Booking booking = new Booking(date.toDateTime(new LocalTime(0,0)).getMillis(), from.toDateTimeToday().getMillis(), to.toDateTimeToday().getMillis(),title, description, roomName);
+        DateTime day = date.toDateTime(new LocalTime(0,0));
+        Booking booking = new Booking(day.getMillis(), from.toDateTime(day).getMillis(), to.toDateTime(day).getMillis(),title, description, roomName);
 
         BookRequest requestBody = new BookRequest(booking, invitationList.toArray(new Person[invitationList.size()]));
 
