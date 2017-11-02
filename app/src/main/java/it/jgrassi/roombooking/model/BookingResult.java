@@ -5,5 +5,6 @@ package it.jgrassi.roombooking.model;
  */
 
 public class BookingResult {
-    public boolean result;
+    public boolean success;
+    public Error error;
 }

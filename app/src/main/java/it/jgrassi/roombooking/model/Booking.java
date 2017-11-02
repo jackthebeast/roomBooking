@@ -7,9 +7,9 @@ package it.jgrassi.roombooking.model;
 public class Booking {
     public String date;
 
-    public String date_start;
+    public String time_start;
 
-    public String date_end;
+    public String time_end;
 
     public String title;
 
@@ -17,10 +17,10 @@ public class Booking {
 
     public String room;
 
-    public Booking(long date, long date_start, long date_end, String title, String description, String room) {
+    public Booking(long date, long time_start, long time_end, String title, String description, String room) {
         this.date = Long.toString(date);
-        this.date_start = Long.toString(date_start);
-        this.date_end = Long.toString(date_end);
+        this.time_start = Long.toString(time_start);
+        this.time_end = Long.toString(time_end);
         this.title = title;
         this.description = description;
         this.room = room;

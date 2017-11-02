@@ -102,7 +102,7 @@ public class BookingViewModel extends BaseObservable {
         boolean isEmailValid = (email != null && !email.equals("")) && email.matches("^[a-z,A-Z0-9._%+-]+@[a-z,A-Z0-9.-]+\\.[a-z,A-Z]{2,}$");
         boolean isNumberValid = (number != null && !number.equals("")) && number.matches("^\\+?[0-9, ]{3,16}$");
 
-        return isNameValid && isEmailValid && isNumberValid;
+        return isNameValid && isEmailValid && isNumberValid && invitationList.size() != 0;
         //return true;
     }
 
@@ -167,10 +167,12 @@ public class BookingViewModel extends BaseObservable {
                     @Override
                     public void accept(BookingResult result)  {
                         cover.set(View.VISIBLE);
-                        if(result.result)
+                        if(result.success)
                             success.set(View.VISIBLE);
-                        else
+                        else {
                             error.set(View.VISIBLE);
+                            Toast.makeText(context, result.error.text, Toast.LENGTH_LONG).show();
+                        }
                     }
                 }, new Consumer<Throwable>() {
                     @Override
